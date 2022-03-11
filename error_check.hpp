@@ -75,10 +75,10 @@ static inline void required_argc_check(int argc, const char *argv[],
 
 static inline void required_p_check(int p, const char *file, int line)
 {
-	if (p < 1 || p > 100) {
+	if (p < 0 || p > 100) {
 		fprintf(stderr,
 			ANSI_COLOR_RED
-			"Incorrect memory usage percent given! %s line %d\nvalue of %d given, acceptable range is 1-100\n" ANSI_COLOR_RESET,
+			"Incorrect memory usage percent given! %s line %d\nvalue of %d given, acceptable range is 0-100\n" ANSI_COLOR_RESET,
 			file, line, p);
 		printf(ANSI_COLOR_RED "Exiting process.\n" ANSI_COLOR_RESET);
 		exit(EXIT_FAILURE);

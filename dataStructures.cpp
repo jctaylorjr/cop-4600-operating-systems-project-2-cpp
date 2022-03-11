@@ -69,18 +69,18 @@ void Buffer::fifoReplaceR(PageTableEntry pte)
 }
 
 // fifo case 2 and 3
-void Buffer::fifoAdd(PageTableEntry pte)
+PageTableEntry Buffer::addPte(PageTableEntry pte)
 {
+	PageTableEntry ejected_pte = pte;
 	// solution 3
 	if (buffer.size() >= nframes) {
-		if (buffer[0].rw.compare("R")) {
-			write_count++;
-		}
+		ejected_pte = buffer[0];
 		buffer.pop_front();
 	}
-	read_count++;
+	// read_count++;
 	// fifo solution 2
 	buffer.push_back(pte);
+	return ejected_pte;
 }
 
 /**************************** LRU ****************************/
@@ -98,29 +98,15 @@ bool Buffer::lruCheckBuffer(PageTableEntry pte)
 	return false;
 }
 
-void Buffer::lruReplaceR(PageTableEntry pte)
+PageTableEntry Buffer::lruReplaceR(PageTableEntry pte)
 {
+	PageTableEntry page = pte;
 	for (int i = 0; i < buffer.size(); i++) {
 		if (buffer[i].vpn == pte.vpn && buffer[i].rw.compare(pte.rw) &&
 		    !pte.rw.compare("W")) {
 			buffer[i].rw = "W";
+			page = buffer[i];
 		}
 	}
+	return page;
 }
-
-// lru case 2 and 3
-void Buffer::lruAdd(PageTableEntry pte)
-{
-	// solution 3
-	if (buffer.size() >= nframes) {
-		if (buffer[0].rw.compare("R")) {
-			write_count++;
-		}
-		buffer.pop_front();
-	}
-	read_count++;
-	// solution 2
-	buffer.push_back(pte);
-}
-
-/**************************** VMS ****************************/

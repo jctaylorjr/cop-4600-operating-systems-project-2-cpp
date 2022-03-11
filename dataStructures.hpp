@@ -33,12 +33,12 @@ class Buffer {
 	void printBufferData();
 	// FIFO
 	bool fifoCheckBuffer(PageTableEntry pte);
-	void fifoAdd(PageTableEntry pte);
+	PageTableEntry addPte(PageTableEntry pte);
 	void fifoReplaceR(PageTableEntry pte);
 	// LRU
 	bool lruCheckBuffer(PageTableEntry pte);
 	void lruAdd(PageTableEntry pte);
-	void lruReplaceR(PageTableEntry pte);
+	PageTableEntry lruReplaceR(PageTableEntry pte);
 	// VMS
 };
 

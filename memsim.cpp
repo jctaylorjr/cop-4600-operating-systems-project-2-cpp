@@ -34,11 +34,11 @@ int main(int argc, char const *argv[])
 
 	if (!policy.compare("fifo")) {
 		// std::cout << "fifo runs" << std::endl;
-		fifo(argv);
+		FIFO(argv);
 	} else if (!policy.compare("lru")) {
-		lru(argv);
+		LRU(argv);
 	} else if (!policy.compare("vms")) {
-		std::cout << "vms runs" << std::endl;
+		VMS(argv);
 	} else {
 		fprintf(stderr, ANSI_COLOR_RED
 			"No policy was selected to run." ANSI_COLOR_RESET);
