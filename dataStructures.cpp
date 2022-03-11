@@ -20,20 +20,38 @@ Buffer::~Buffer()
 {
 }
 
-// fifo solution 1
-void Buffer::checkForWBit(PageTableEntry pte)
+unsigned int PageTableEntry::addrStrtoUnsigned(std::string str)
 {
-	if (!pte.rw.compare("W")) {
-		// read_count++;
-	}
+	return std::stoul(str, nullptr, 16);
 }
 
+void PageTableEntry::generateVPN()
+{
+	this->vpn = this->addr >> 12;
+}
+
+void Buffer::printBufferData()
+{
+	std::cout << "Memory frames: " << nframes
+		  << "\nTrace count: " << trace_count
+		  << "\nRead count: " << read_count
+		  << "\nWrite count: " << write_count << std::endl;
+}
+
+// void Buffer::checkForWBit(PageTableEntry pte)
+// {
+// 	if (!pte.rw.compare("W")) {
+// 		// read_count++;
+// 	}
+// }
+
+/**************************** FIFO ****************************/
+
 // fifo case 1
-bool Buffer::checkBuffer(PageTableEntry pte)
+bool Buffer::fifoCheckBuffer(PageTableEntry pte)
 {
 	for (int i = 0; i < buffer.size(); i++) {
 		if (buffer[i].vpn == pte.vpn) {
-			checkForWBit(buffer[i]);
 			return true;
 		}
 	}
@@ -65,12 +83,44 @@ void Buffer::fifoAdd(PageTableEntry pte)
 	buffer.push_back(pte);
 }
 
-unsigned int PageTableEntry::addrStrtoUnsigned(std::string str)
+/**************************** LRU ****************************/
+
+bool Buffer::lruCheckBuffer(PageTableEntry pte)
 {
-	return std::stoul(str, nullptr, 16);
+	for (int i = 0; i < buffer.size(); i++) {
+		if (buffer[i].vpn == pte.vpn) {
+			PageTableEntry reinsert = buffer[i];
+			buffer.erase(buffer.begin() + i);
+			buffer.push_back(reinsert);
+			return true;
+		}
+	}
+	return false;
 }
 
-void PageTableEntry::generateVPN()
+void Buffer::lruReplaceR(PageTableEntry pte)
 {
-	this->vpn = this->addr >> 12;
+	for (int i = 0; i < buffer.size(); i++) {
+		if (buffer[i].vpn == pte.vpn && buffer[i].rw.compare(pte.rw) &&
+		    !pte.rw.compare("W")) {
+			buffer[i].rw = "W";
+		}
+	}
 }
+
+// lru case 2 and 3
+void Buffer::lruAdd(PageTableEntry pte)
+{
+	// solution 3
+	if (buffer.size() >= nframes) {
+		if (buffer[0].rw.compare("R")) {
+			write_count++;
+		}
+		buffer.pop_front();
+	}
+	read_count++;
+	// solution 2
+	buffer.push_back(pte);
+}
+
+/**************************** VMS ****************************/

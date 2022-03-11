@@ -3,6 +3,8 @@
 
 #include <deque>
 #include <fstream>
+#include <iostream>
+#include <string>
 
 class PageTableEntry {
     private:
@@ -28,10 +30,17 @@ class Buffer {
 
 	Buffer(int nframes);
 	~Buffer();
+	void printBufferData();
+	// FIFO
+	bool fifoCheckBuffer(PageTableEntry pte);
 	void fifoAdd(PageTableEntry pte);
 	void fifoReplaceR(PageTableEntry pte);
-	bool checkBuffer(PageTableEntry pte);
-	void checkForWBit(PageTableEntry pte);
+	// LRU
+	bool lruCheckBuffer(PageTableEntry pte);
+	void lruAdd(PageTableEntry pte);
+	void lruReplaceR(PageTableEntry pte);
+	// VMS
 };
 
+// void checkForWBit(PageTableEntry pte);
 #endif

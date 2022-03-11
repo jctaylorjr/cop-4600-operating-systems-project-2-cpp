@@ -2,5 +2,6 @@
 #define POLICIES_H
 
 void fifo(char const *argv[]);
+void lru(char const *argv[]);
 
 #endif

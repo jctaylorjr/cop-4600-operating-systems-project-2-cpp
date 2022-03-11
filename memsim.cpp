@@ -36,7 +36,7 @@ int main(int argc, char const *argv[])
 		// std::cout << "fifo runs" << std::endl;
 		fifo(argv);
 	} else if (!policy.compare("lru")) {
-		std::cout << "lru runs" << std::endl;
+		lru(argv);
 	} else if (!policy.compare("vms")) {
 		std::cout << "vms runs" << std::endl;
 	} else {

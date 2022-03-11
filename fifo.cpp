@@ -3,6 +3,7 @@
 #include <cstdlib>
 
 #include "dataStructures.hpp"
+#include "policies.hpp"
 
 void fifo(char const *argv[])
 {
@@ -18,15 +19,12 @@ void fifo(char const *argv[])
 
 	while (infile >> addr >> rw) {
 		PageTableEntry new_pte(rw, addr);
-		if (fifo.checkBuffer(new_pte)) {
+		if (fifo.fifoCheckBuffer(new_pte)) {
 			fifo.fifoReplaceR(new_pte);
 		} else {
 			fifo.fifoAdd(new_pte);
 		}
 		fifo.trace_count++;
 	}
-	std::cout << "Memory frames: " << fifo.nframes
-		  << "\nTrace count: " << fifo.trace_count
-		  << "\nRead count: " << fifo.read_count
-		  << "\nWrite count: " << fifo.write_count << std::endl;
+	fifo.printBufferData();
 }
